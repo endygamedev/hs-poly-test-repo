@@ -1,12 +1,13 @@
 module Part1.Tasks where
 
-import Util(notImplementedYet)
+import Util (notImplementedYet)
 
 taylorSeries :: Double -> Integer -> (Double -> Integer -> Double) -> Double -> Double -> Double
 taylorSeries x n termFormula previous target
   | abs (previous - current) <= target = current -- absolute error
   | otherwise = current + taylorSeries x (n + 1) termFormula current target
-    where current = termFormula x n
+  where
+    current = termFormula x n
 
 -- синус числа (формула Тейлора)
 mySin :: Double -> Double
@@ -14,7 +15,7 @@ mySin z = taylorSeries z 0 sinTerm (z + 2 * accuracy) accuracy
   where
     accuracy = 1e-9
     sinTerm :: Double -> Integer -> Double
-    sinTerm x n = (-1) ^ n * x ** (2 * fromIntegral n + 1) / fromIntegral (product [1..(2 * n + 1)])
+    sinTerm x n = (-1) ^ n * x ** (2 * fromIntegral n + 1) / fromIntegral (product [1 .. (2 * n + 1)])
 
 -- косинус числа (формула Тейлора)
 myCos :: Double -> Double
@@ -22,7 +23,7 @@ myCos z = taylorSeries z 0 cosTerm (z + 2 * accuracy) accuracy
   where
     accuracy = 1e-9
     cosTerm :: Double -> Integer -> Double
-    cosTerm x n = (-1) ^ n * x ** (2 * fromIntegral n) / fromIntegral (product [1..(2 * n)])
+    cosTerm x n = (-1) ^ n * x ** (2 * fromIntegral n) / fromIntegral (product [1 .. (2 * n)])
 
 -- наибольший общий делитель двух чисел
 myGCD :: Integer -> Integer -> Integer
@@ -42,8 +43,7 @@ isDateCorrect day month year
 
     daysInMonth :: [(String, Integer)]
     daysInMonth =
-      [
-        ("January", 31),
+      [ ("January", 31),
         ("February", 28),
         ("March", 31),
         ("April", 30),
@@ -68,25 +68,24 @@ myPow x n
 -- является ли данное число простым?
 isPrime :: Integer -> Bool
 isPrime n
-  | n <= 1 = False  -- 0 and 1 are not prime
-  | otherwise = not $ any (\x -> n `mod` x == 0) [2..floor (sqrt (fromIntegral n))]
+  | n <= 1 = False -- 0 and 1 are not prime
+  | otherwise = not $ any (\x -> n `mod` x == 0) [2 .. floor (sqrt (fromIntegral n))]
 
 type Point2D = (Double, Double)
 
 -- рассчитайте площадь многоугольника по формуле Гаусса
 -- многоугольник задан списком координат
 shapeArea :: [Point2D] -> Double
-shapeArea points = 
-  let
-    (xs, ys) = unzip points
-    n = length points
-  in
-    0.5 * abs (
-      sum [xs !! i * ys !! (i + 1) | i <- [0..(n - 2)]] +
-      last xs * head ys -
-      sum [xs !! (i + 1) * ys !! i | i <- [0..(n - 2)]] -
-      head xs * last ys
-      )
+shapeArea points =
+  let (xs, ys) = unzip points
+      n = length points
+   in 0.5
+        * abs
+          ( sum [xs !! i * ys !! (i + 1) | i <- [0 .. (n - 2)]]
+              + last xs * head ys
+              - sum [xs !! (i + 1) * ys !! i | i <- [0 .. (n - 2)]]
+              - head xs * last ys
+          )
 
 -- треугольник задан длиной трёх своих сторон.
 -- функция должна вернуть
@@ -98,23 +97,23 @@ triangleKind :: Double -> Double -> Double -> Integer
 triangleKind a b c
   | not $ isTriangle a b c = -1
   | isRectangular a b c = 2
-  | isAcute a b c  = 0
+  | isAcute a b c = 0
   | otherwise = 1
   where
     isTriangle :: Double -> Double -> Double -> Bool
     isTriangle a b c =
-      a + b > c &&
-      a + c > b &&
-      b + c > a
+      a + b > c
+        && a + c > b
+        && b + c > a
 
-    isRectangular :: Double -> Double -> Double -> Bool 
+    isRectangular :: Double -> Double -> Double -> Bool
     isRectangular a b c =
-      a ^ 2 + b ^ 2 == c ^ 2 ||
-      a ^ 2 + c ^ 2 == b ^ 2 ||
-      b ^ 2 + c ^ 2 == a ^ 2
-  
+      a ^ 2 + b ^ 2 == c ^ 2
+        || a ^ 2 + c ^ 2 == b ^ 2
+        || b ^ 2 + c ^ 2 == a ^ 2
+
     isAcute :: Double -> Double -> Double -> Bool
     isAcute a b c =
-      a ^ 2 + b ^ 2 < c ^ 2 ||
-      a ^ 2 + c ^ 2 < b ^ 2 ||
-      b ^ 2 + c ^ 2 < a ^ 2
+      a ^ 2 + b ^ 2 < c ^ 2
+        || a ^ 2 + c ^ 2 < b ^ 2
+        || b ^ 2 + c ^ 2 < a ^ 2
