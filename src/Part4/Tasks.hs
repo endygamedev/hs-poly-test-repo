@@ -28,23 +28,39 @@ instance Show a => Show (ReverseList a) where
   showsPrec _ = show'
     where
       show' REmpty = id
-      show' (xs :< x) = show'   xs . ("," ++) . shows x
+      show' (xs :< x) = show' xs . ("," ++) . shows x
   show x = "[" <> show' x <> "]"
     where
       show' REmpty = ""
       show' (REmpty :< x) = show x
       show' (xs :< x) = show' xs <> "," <> show x
 
-instance Eq (ReverseList a) where
-  (==) = notImplementedYet
-  (/=) = notImplementedYet
+instance Eq a => Eq (ReverseList a) where
+  (==) REmpty REmpty = True
+  (==) (xs :< x) (ys :< y) = x == y && xs == ys
+  (==) _ _ = False
 
-instance Semigroup (ReverseList a)
+  (/=) x y = not (x == y)
 
-instance Monoid (ReverseList a)
+instance Semigroup (ReverseList a) where
+  (<>) x REmpty = x
+  (<>) xs (ys :< y) = (xs <> ys) :< y
 
-instance Functor ReverseList
+instance Monoid (ReverseList a) where
+  mempty = REmpty
 
-instance Applicative ReverseList
+instance Functor ReverseList where
+  fmap f REmpty = REmpty
+  fmap f (xs :< x) = fmap f xs :< f x
 
-instance Monad ReverseList
+instance Applicative ReverseList where
+  pure x = REmpty :< x
+
+  (<*>) REmpty _ = REmpty
+  (<*>) (fs :< f) xs = (fs <*> xs) <> fmap f xs
+
+instance Monad ReverseList where
+  return x = REmpty :< x
+
+  (>>=) REmpty f = REmpty
+  (>>=) (xs :< x) f = (xs >>= f) <> f x
