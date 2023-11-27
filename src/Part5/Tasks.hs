@@ -1,32 +1,33 @@
 module Part5.Tasks where
 
-import Util(notImplementedYet)
+import Util (notImplementedYet)
 
 -- Реализуйте левую свёртку
 myFoldl :: (b -> a -> b) -> b -> [a] -> b
-myFoldl = notImplementedYet
+myFoldl f init [] = init
+myFoldl f init (x : xs) = myFoldl f (f init x) xs
 
 -- Реализуйте правую свёртку
 myFoldr :: (a -> b -> b) -> b -> [a] -> b
-myFoldr = notImplementedYet
+myFoldr f init [] = init
+myFoldr f init (x : xs) = f x (myFoldr f init xs)
 
 -- Используя реализации свёрток выше, реализуйте все остальные функции в данном файле
 
 myMap :: (a -> b) -> [a] -> [b]
-myMap f = notImplementedYet
+myMap f = myFoldl (\acc x -> acc ++ [f x]) []
 
 myConcatMap :: (a -> [b]) -> [a] -> [b]
-myConcatMap f = notImplementedYet
+myConcatMap f = myFoldl (\acc x -> acc ++ f x) []
 
 myConcat :: [[a]] -> [a]
-myConcat = notImplementedYet
+myConcat = myFoldl (++) []
 
 myReverse :: [a] -> [a]
-myReverse = notImplementedYet
+myReverse = myFoldl (flip (:)) []
 
 myFilter :: (a -> Bool) -> [a] -> [a]
-myFilter p = notImplementedYet
+myFilter p = myFoldl (\acc x -> if p x then acc ++ [x] else acc) []
 
 myPartition :: (a -> Bool) -> [a] -> ([a], [a])
-myPartition p = notImplementedYet
-
+myPartition p = myFoldl (\(trueAcc, falseAcc) x -> if p x then (trueAcc ++ [x], falseAcc) else (trueAcc, falseAcc ++ [x])) ([], [])
