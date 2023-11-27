@@ -25,7 +25,10 @@ listToRlist = listToRlist' REmpty
 
 -- Реализуйте все представленные ниже классы (см. тесты)
 instance Show a => Show (ReverseList a) where
-  showsPrec = notImplementedYet
+  showsPrec _ = show'
+    where
+      show' REmpty = id
+      show' (xs :< x) = show'   xs . ("," ++) . shows x
   show x = "[" <> show' x <> "]"
     where
       show' REmpty = ""
