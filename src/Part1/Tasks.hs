@@ -2,6 +2,9 @@ module Part1.Tasks where
 
 import Util (notImplementedYet)
 
+normalize :: Double -> Double
+normalize x = x - 2 * pi * fromIntegral (round (x / (2 * pi)))
+
 taylorSeries :: Double -> Integer -> (Double -> Integer -> Double) -> Double -> Double -> Double
 taylorSeries x n termFormula previous target
   | abs (previous - current) <= target = current -- absolute error
@@ -11,17 +14,21 @@ taylorSeries x n termFormula previous target
 
 -- синус числа (формула Тейлора)
 mySin :: Double -> Double
-mySin z = taylorSeries z 0 sinTerm (z + 2 * accuracy) accuracy
+mySin z = taylorSeries normalizeZ 0 sinTerm (normalizeZ + 2 * accuracy) accuracy
   where
     accuracy = 1e-9
+    normalizeZ = normalize z
+
     sinTerm :: Double -> Integer -> Double
     sinTerm x n = (-1) ^ n * x ** (2 * fromIntegral n + 1) / fromIntegral (product [1 .. (2 * n + 1)])
 
 -- косинус числа (формула Тейлора)
 myCos :: Double -> Double
-myCos z = taylorSeries z 0 cosTerm (z + 2 * accuracy) accuracy
+myCos z = taylorSeries normalizeZ 0 cosTerm (normalizeZ + 2 * accuracy) accuracy
   where
     accuracy = 1e-9
+    normalizeZ = normalize z
+
     cosTerm :: Double -> Integer -> Double
     cosTerm x n = (-1) ^ n * x ** (2 * fromIntegral n) / fromIntegral (product [1 .. (2 * n)])
 
