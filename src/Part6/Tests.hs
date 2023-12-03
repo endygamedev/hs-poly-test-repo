@@ -37,3 +37,13 @@ unit_multiplyMatrix = do
 
     mxResult :: [[Int]]
     mxResult = [[74, 96], [116, 148]]
+
+unit_determinant = do
+  determinant one @?= one
+  determinant mx @?= 0
+  where
+    one :: Int
+    one = 1
+
+    mx :: [[Int]]
+    mx = [[2, 6, 4], [1, 9, 7], [1, 3, 2]]

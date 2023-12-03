@@ -20,6 +20,7 @@ class Matrix mx where
   zero :: Int -> Int -> mx
   eye :: Int -> mx
   multiplyMatrix :: mx -> mx -> mx
+  determinant :: mx -> Int
 
 -- Определите экземпляры данного класса для:
 --  * числа (считается матрицей 1x1)
@@ -29,19 +30,29 @@ instance Matrix Int where
   zero _ _ = 0
   eye _ = 1
   multiplyMatrix x y = x * y
+  determinant = id
 
 instance Matrix [[Int]] where
   zero n m = [[0 | j <- [0 .. (n - 1)]] | i <- [0 .. (m - 1)]]
   eye n = [[if i == j then 1 else 0 | j <- [0 .. (n - 1)]] | i <- [0 .. (n - 1)]]
   multiplyMatrix x y = [[sum $ zipWith (*) rowX colY | colY <- transpose y] | rowX <- x]
+  determinant x = determinant' x
+    where
+      determinant' [[x]] = x
+      determinant' x =
+        let n = length x
+         in sum [(-1) ^ j * head x !! j * determinant' (minor 0 j x) | j <- [0 .. (n - 1)]]
+
+      minor i j x = [removeAt j row | (row, rowIndex) <- zip x [0 ..], rowIndex /= i]
+
+      removeAt _ [] = []
+      removeAt 0 (_ : xs) = xs
+      removeAt n (x : xs) = x : removeAt (n - 1) xs
 
 instance Matrix (SparseMatrix Int) where
   zero n m = SparseMatrix n m mempty
   eye n = SparseMatrix n n sparseMatrixElements
     where
       sparseMatrixElements = fromList [((i, i), 1) | i <- [0 .. (n - 1)]]
-  multiplyMatrix x y = notImplementedYet
-
--- Определитель матрицы
-determinant :: Matrix m => m -> Int
-determinant = notImplementedYet
+  multiplyMatrix = notImplementedYet
+  determinant = notImplementedYet
