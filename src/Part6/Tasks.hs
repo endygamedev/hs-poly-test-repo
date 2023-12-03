@@ -54,5 +54,19 @@ instance Matrix (SparseMatrix Int) where
   eye n = SparseMatrix n n sparseMatrixElements
     where
       sparseMatrixElements = fromList [((i, i), 1) | i <- [0 .. (n - 1)]]
-  multiplyMatrix = notImplementedYet
+  multiplyMatrix x y =
+    SparseMatrix
+      { sparseMatrixWidth = width,
+        sparseMatrixHeight = height,
+        sparseMatrixElements = elements
+      }
+    where
+      width = sparseMatrixWidth x
+      height = sparseMatrixHeight y
+
+      calculateElement i j x y =
+        sum [findWithDefault 0 (i, k) (sparseMatrixElements x) * findWithDefault 0 (k, j) (sparseMatrixElements y) | k <- [0 .. (sparseMatrixHeight x - 1)]]
+
+      elements = fromList [((i, j), calculateElement i j x y) | i <- [0 .. (width - 1)], j <- [0 .. (height - 1)]]
+
   determinant = notImplementedYet

@@ -25,6 +25,7 @@ unit_zero = do
 unit_multiplyMatrix = do
   multiplyMatrix one one @?= one
   multiplyMatrix mxFirst mxSecond @?= mxResult
+  multiplyMatrix sparseMxFirst sparseMxSecond @?= sparseMxResult
   where
     one :: Int
     one = 1
@@ -37,6 +38,15 @@ unit_multiplyMatrix = do
 
     mxResult :: [[Int]]
     mxResult = [[74, 96], [116, 148]]
+
+    sparseMxFirst :: SparseMatrix Int
+    sparseMxFirst = SparseMatrix 2 3 (Data.Map.fromList [((0, 0), 2), ((0, 2), 4), ((1, 1), 9)])
+
+    sparseMxSecond :: SparseMatrix Int
+    sparseMxSecond = SparseMatrix 3 2 (Data.Map.fromList [((0, 0), 3), ((1, 0), 4), ((1, 1), 10), ((2, 1), 8)])
+
+    sparseMxResult :: SparseMatrix Int
+    sparseMxResult = SparseMatrix 2 2 (Data.Map.fromList [((0, 0), 6), ((0, 1), 32), ((1, 0), 36), ((1, 1), 90)])
 
 unit_determinant = do
   determinant one @?= one
